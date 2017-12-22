@@ -66,7 +66,7 @@ function getNewFile() {
 		var con = mysql.createConnection({
 		  host: process.env.dbhost,
 		  user: process.env.dbuser,
-		  password: process.env.dbpass
+		  password: process.env.dbpass,
 		  database : process.env.dbname
 		});		
 
