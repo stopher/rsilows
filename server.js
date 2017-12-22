@@ -45,7 +45,7 @@ let dataArr = [];
 function testDb() {
 	if(process.env.dbuser) {
 		var con = mysql.createConnection({
-		  host: process.env.OPENSHIFT_MYSQL_DB_HOST,
+		  host: process.env.dbhost,
 		  port: process.env.OPENSHIFT_MYSQL_DB_PORT,
 		  user: process.env.dbuser,
 		  password: process.env.dbpass,
