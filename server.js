@@ -39,6 +39,30 @@ const DEFAULT_QUERY = '?exchange=OSE&sec_types=&sectors=&ticks=&table=tab&sort=a
 
 let dataArr = [];
 
+
+function testDb() {
+	if(process.env.dbhost) {
+		var con = mysql.createConnection({
+		  host: process.env.dbhost,
+		  user: process.env.dbuser,
+		  password: process.env.dbpass,
+		  database : process.env.dbname
+		});		
+
+		con.connect(function(err) {
+	  		if (err) throw err;
+	  		console.log("Connected to database!");
+		});
+
+		connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
+		  if (error) throw error;
+		  console.log('The solution is: ', results[0].solution);
+		});
+ 
+		connection.end();
+	}
+}
+
 function getNewFile() {
 	const d = new Date();
 	const date = d.toLocaleDateString();
@@ -62,32 +86,14 @@ function getNewFile() {
 
 
 
-	if(process.env.dbhost) {
-		var con = mysql.createConnection({
-		  host: process.env.dbhost,
-		  user: process.env.dbuser,
-		  password: process.env.dbpass,
-		  database : process.env.dbname
-		});		
 
-		con.connect(function(err) {
-	  		if (err) throw err;
-	  		console.log("Connected to database!");
-		});
-
-		connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
-		  if (error) throw error;
-		  console.log('The solution is: ', results[0].solution);
-		});
- 
-		connection.end();
-	}
 
 	
 
 }
 
-getNewFile();
+testDb();
+//getNewFile();
 schedule.scheduleJob('0 20 * * *', () => { 
 	console.log("Running scheduled Job");
 	getNewFile();
