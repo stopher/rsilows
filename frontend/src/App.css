@@ -26,3 +26,19 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.rsiObj {
+  background: grey;
+  color: black;
+  border-radius: 10px;
+}
+
+.rsival {
+  color: red;
+  font-size: 16px;
+}
+
+.ticker {
+  color:black;
+  font-size: 12px;
+}

@@ -40,17 +40,20 @@ class App extends Component {
           Test
         </p>
 
-        <pre>
+        
 
         <h1>Test {this.state.more}</h1>
 
+        <ul>
+
         {
-          this.state.data && this.state.data.map((x,y ) => {
-            return (<div>{x}</div>);
+          this.state.data && this.state.data.forEach((x) => {
+            return (<li className="rsiObj"><span className='ticker'>{x.ticker}</span><span className='rsival'>{x.rsi}</span></li>);
           })
         }
+        </ul>
 
-        </pre>
+        
       </div>
     );
   }

@@ -63,9 +63,17 @@ var j = schedule.scheduleJob('*/5 * * * *', function(fireDate){
   //fetchRsi();
 });
 
+function compare(a,b) {
+  if (a.rsi < b.rsi)
+    return -1;
+  if (a.rsi > b.rsi)
+    return 1;
+  return 0;
+}
+
 router.get('/', function(req, res) {
 
-    res.json({ data: rsis });   
+    res.json({ data: rsis.sort(compare)});   
 });
 app.use('/api', router);
 
