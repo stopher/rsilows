@@ -17,7 +17,8 @@ const schedule = require('node-schedule');
 const mysql = require('mysql');
 
 
-
+const RSI_URL = 'http://quotes.hegnar.no/plotaux.php?paper=';
+const RSI_LAST_PART = '&exchange=OSE&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
 
 
 // configure app to use bodyParser()
@@ -36,77 +37,39 @@ var router = express.Router();              // get an instance of the express Ro
 var http = require('http');
 var fs = require('fs');
 
-const API = 'http://www.netfonds.no/quotes/kurs.php';
-const DEFAULT_QUERY = '?exchange=OSE&sec_types=&sectors=&ticks=&table=tab&sort=alphabetic';
+//testDb();
+//createTablesIfNotExists();
 
-let dataArr = [];
-
-
-function testDb() {
-	if(process.env.dbuser) {
-		var con = mysql.createConnection({
-		  host: process.env.dbhost,
-		  port: process.env.OPENSHIFT_MYSQL_DB_PORT,
-		  user: process.env.dbuser,
-		  password: process.env.dbpass,
-		  database : process.env.dbname
-		});		
-
-		con.connect(function(err) {
-	  		if (err) throw err;
-	  		console.log("Connected to database!");
-		});
-
-		con.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
-		  if (error) throw error;
-		  console.log('The solution is: ', results[0].solution);
-		});
- 
-		con.end();
-	}
-}
-
-function getNewFile() {
-	const d = new Date();
-	const date = d.toLocaleDateString();
-	const filename = date+".csv";
-	if (!fs.existsSync(filename)) {
-		console.log('file did not exist')
-		var file = fs.createWriteStream(filename);
-		var request = http.get(API+DEFAULT_QUERY, function(response) {
-			console.log('file written..')
-		  response.pipe(file);
-		});
-	} else {
-			console.log('file exists..')
-	}
-	var data = fs.readFileSync(filename, { encoding : 'utf8'});
-	var options = {
-	  delimiter : '\t'
-	};
-	dataArr = csvjson.toArray(data, options);
-
-
-
-
-
-
-	
-
-}
-
-testDb();
 //getNewFile();
-schedule.scheduleJob('0 20 * * *', () => { 
-	console.log("Running scheduled Job");
-	getNewFile();
+
+
+const rsis = [];
+function addTicker(ticker, rsival) {
+	rsis.push({ticker: ticker, rsi: rsival});
+}
+
+addTicker("FUNCOM", 30.1);
+addTicker("STAR", 20.1);
+addTicker("NAS", 10.1);
+
+function fetchRsi(ticker) {
+	var request = http.get(RSI_URL+ticker+RSI_LAST_PART, function(response) {
+		console.log('got response');
+	});
+}
+
+var j = schedule.scheduleJob('*/5 * * * *', function(fireDate){
+  console.log('This job was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
+  //fetchRsi();
 });
 
-// test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function(req, res) {
-    res.json({ data: dataArr });   
+
+    res.json({ data: rsis });   
 });
 app.use('/api', router);
+
+fetchRsi();
 
 app.use(express.static(path.resolve(__dirname, 'frontend', 'build')));
 app.get('*', (req, res) => {
