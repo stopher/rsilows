@@ -48,7 +48,7 @@ class App extends Component {
 
         {
           this.state.data && this.state.data.forEach((x) => {
-            return (<li className="rsiObj"><span className='ticker'>{x.ticker}</span><span className='rsival'>{x.rsi}</span></li>);
+            return (<li className="rsiObj"><span className='ticker'>t</span><span className='rsival'>rsi</span></li>);
           })
         }
         </ul>

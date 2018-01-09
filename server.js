@@ -17,6 +17,10 @@ const schedule = require('node-schedule');
 const mysql = require('mysql');
 
 
+const KURSER_PART1 = 'http://www.netfonds.no/quotes/kurs.php';
+const CSV_PART = '?exchange=OSE&sec_types=&sectors=&ticks=&table=tab&sort=alphabetic';
+
+
 const RSI_URL = 'http://quotes.hegnar.no/plotaux.php?paper=';
 const RSI_LAST_PART = '&exchange=OSE&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
 
@@ -42,7 +46,7 @@ var fs = require('fs');
 
 //getNewFile();
 
-
+const tickers = ["FUNCOM", "NAS", "REC", "APCL", "MHG", "KOMP"];
 const rsis = [];
 function addTicker(ticker, rsival) {
 	rsis.push({ticker: ticker, rsi: rsival});
@@ -54,13 +58,74 @@ addTicker("NAS", 10.1);
 
 function fetchRsi(ticker) {
 	var request = http.get(RSI_URL+ticker+RSI_LAST_PART, function(response) {
-		console.log('got response');
+		console.log('got rsi for:'+ticker);
+
+		const b = x2.split("jsonCallback(")[1];
+		const b2 = b.substring(0, b.length-2);
+		const parsedResponse = JSON.parse(b2);
+		const lastRsi = b3.values[b3.values.length-1];
+		const rsi = parseFloat(lastRsi[1]);
+
+		const tickerPos = rsis.find(x => {
+			return x.ticker === ticker;
+		});
+
+		if(tickerPos < 0) {
+			tickers.push({ticker: ticker, rsi: rsi});
+		} else {
+			tickers[tickerPos] = {ticker: ticker, rsi: rsi};
+		}
 	});
 }
 
-var j = schedule.scheduleJob('*/5 * * * *', function(fireDate){
-  console.log('This job was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
-  //fetchRsi();
+
+function fetchTickers(ticker) {
+	const request = http.get(KURSER_PART1+CSV_PART, function(response) {
+		console.log('got tickers');
+		const options = {
+		  delimiter : '\t'
+		};
+		const myTickers = [];
+		const dataArr = csvjson.toArray(data, options);
+
+		dataArr.forEach(x => {
+			const ticker = x[1];
+			if(ticker) {
+				if(tickers.indexOf(ticker) < 0) {
+					tickers.push(ticker);					
+				}
+			}
+		});
+	});
+}
+
+let genObj = genFunc();
+
+function* genFunc() {
+  for(let item of tickers) {
+    yield item;
+  }
+}
+
+const getFreshRSIs() {
+	let interval = setInterval(() => {
+	  val = genObj.next();
+	  if (val.done) {
+	    clearInterval(interval);
+	  } else {
+	    fetchRsi(val.value);
+	  }
+	}, 10000);
+}
+
+const tickersSchedule = schedule.scheduleJob('* * 18 * * *', function(fireDate){
+  console.log('This ticker schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
+  //fetchTickers();
+});
+
+const rsiSchedule = schedule.scheduleJob('* 45 22 * * *', function(fireDate){
+  console.log('This rsi schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
+  getFreshRSIs();
 });
 
 function compare(a,b) {
