@@ -71,9 +71,9 @@ function fetchRsi(ticker) {
 		});
 
 		if(tickerPos < 0) {
-			tickers.push({ticker: ticker, rsi: rsi});
+			rsis.push({ticker: ticker, rsi: rsi});
 		} else {
-			tickers[tickerPos] = {ticker: ticker, rsi: rsi};
+			rsis[tickerPos] = {ticker: ticker, rsi: rsi};
 		}
 	});
 }
