@@ -107,7 +107,7 @@ function* genFunc() {
   }
 }
 
-const getFreshRSIs() {
+function getFreshRSIs() {
 	let interval = setInterval(() => {
 	  val = genObj.next();
 	  if (val.done) {
