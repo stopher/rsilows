@@ -44,35 +44,28 @@ const request = require('request');
 
 //getNewFile();
 
-const tickers = ["FUNCOM", "NAS", "REC", "APCL", "MHG", "KOMP"];
-const rsis = [];
+const tickers = ["FUNCOM", "NAS", "REC", "TEL", "MHG", "KOMP", "FRO", "DNB", "MHG"];
+let rsis = [];
 function addTicker(ticker, rsival) {
 	rsis.push({ticker: ticker, rsi: rsival});
 }
-
-addTicker("FUNCOM", 30.1);
-addTicker("REC", 20.1);
-addTicker("NAS", 10.1);
 
 function fetchRsi(ticker) {
 
 	request.get(RSI_URL+ticker+RSI_LAST_PART, (error, response, body) => {
 	 	console.log('got rsi for:'+ticker);
-		console.log(body);
 		const b = body.split("jsonCallback(")[1];
 		const b2 = b.substring(0, b.length-2);
 		const parsedResponse = JSON.parse(b2);
 		const lastRsi = parsedResponse.values[parsedResponse.values.length-1];
 		const rsi = parseFloat(lastRsi[1]);
-
 		const tickerPos = rsis.find(x => {
 			return x.ticker === ticker;
 		});
-
-		if(tickerPos < 0) {
+		if(tickerPos == undefined || tickerPos < 0) {
 			rsis.push({ticker: ticker, rsi: rsi});
 		} else {
-			rsis[tickerPos] = {ticker: ticker, rsi: rsi};
+			rsis = rsis.map(function(item) { return item.ticker == ticker ? {ticker:ticker, rsi: rsi} : item; });
 		}
 	});
 
@@ -124,7 +117,7 @@ const tickersSchedule = schedule.scheduleJob('* * 18 * * *', function(fireDate){
   //fetchTickers();
 });
 
-const rsiSchedule = schedule.scheduleJob('* 45 22 * * *', function(fireDate){
+const rsiSchedule = schedule.scheduleJob('* 45 03 * * *', function(fireDate){
   console.log('This rsi schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
   getFreshRSIs();
 });
@@ -138,8 +131,8 @@ function compare(a,b) {
 }
 
 router.get('/', function(req, res) {
-
-    res.json({ data: rsis.sort(compare)});   
+	const responseData = rsis.sort(compare);
+    res.json({ data: responseData});   
 });
 app.use('/api', router);
 
