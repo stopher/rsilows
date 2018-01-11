@@ -58,8 +58,8 @@ function fetchRsi(ticker) {
 
 	request.get(RSI_URL+ticker+RSI_LAST_PART, (error, response, body) => {
 	 	console.log('got rsi for:'+ticker);
-		console.log(response);
-		const b = response.split("jsonCallback(")[1];
+		console.log(body);
+		const b = body.split("jsonCallback(")[1];
 		const b2 = b.substring(0, b.length-2);
 		const parsedResponse = JSON.parse(b2);
 		const lastRsi = b3.values[b3.values.length-1];
@@ -87,7 +87,7 @@ function fetchTickers(ticker) {
 		  delimiter : '\t'
 		};
 		const myTickers = [];
-		const dataArr = csvjson.toArray(data, options);
+		const dataArr = csvjson.toArray(body, options);
 
 		dataArr.forEach(x => {
 			const ticker = x[1];
