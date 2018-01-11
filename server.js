@@ -53,7 +53,7 @@ function addTicker(ticker, rsival) {
 }
 
 addTicker("FUNCOM", 30.1);
-addTicker("STAR", 20.1);
+addTicker("REC", 20.1);
 addTicker("NAS", 10.1);
 
 function fetchRsi(ticker) {
@@ -142,7 +142,7 @@ router.get('/', function(req, res) {
 });
 app.use('/api', router);
 
-fetchRsi();
+fetchRsi("FUNCOM");
 
 app.use(express.static(path.resolve(__dirname, 'frontend', 'build')));
 app.get('*', (req, res) => {
