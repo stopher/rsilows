@@ -62,7 +62,7 @@ function fetchRsi(ticker) {
 		const b = body.split("jsonCallback(")[1];
 		const b2 = b.substring(0, b.length-2);
 		const parsedResponse = JSON.parse(b2);
-		const lastRsi = b3.values[b3.values.length-1];
+		const lastRsi = parsedResponse.values[parsedResponse.values.length-1];
 		const rsi = parseFloat(lastRsi[1]);
 
 		const tickerPos = rsis.find(x => {
