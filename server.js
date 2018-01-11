@@ -60,7 +60,7 @@ function fetchRsi(ticker) {
 	var request = http.get(RSI_URL+ticker+RSI_LAST_PART, function(response) {
 		console.log('got rsi for:'+ticker);
 
-		const b = x2.split("jsonCallback(")[1];
+		const b = response.split("jsonCallback(")[1];
 		const b2 = b.substring(0, b.length-2);
 		const parsedResponse = JSON.parse(b2);
 		const lastRsi = b3.values[b3.values.length-1];
