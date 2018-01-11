@@ -5,13 +5,12 @@
 // =============================================================================
 
 // call the packages we need
-var express    = require('express');        // call express
-var app        = express();                 // define our app using express
-var bodyParser = require('body-parser');
-const morgan = require('morgan');
-var fs = require('fs');
+const express    = require('express');        // call express
+const app        = express();                 // define our app using express
+const bodyParser = require('body-parser');
+
 const path = require('path');
-var csvjson = require('csvjson');
+const csvjson = require('csvjson');
 
 const schedule = require('node-schedule');
 const mysql = require('mysql');
@@ -30,16 +29,15 @@ const RSI_LAST_PART = '&exchange=OSE&from=&to=&period=&scale=linear&linewidth=1&
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port = process.env.PORT || 8080;        // set our port
+const port = process.env.PORT || 8080;        // set our port
 
 // ROUTES FOR OUR API
 // =============================================================================
-var router = express.Router();              // get an instance of the express Router
+const router = express.Router();              // get an instance of the express Router
 
 
+const request = require('request');
 
-var http = require('http');
-var fs = require('fs');
 
 //testDb();
 //createTablesIfNotExists();
@@ -57,11 +55,11 @@ addTicker("REC", 20.1);
 addTicker("NAS", 10.1);
 
 function fetchRsi(ticker) {
-	var request = http.get(RSI_URL+ticker+RSI_LAST_PART, function(response) {
-		console.log('got rsi for:'+ticker);
+
+	request.get(RSI_URL+ticker+RSI_LAST_PART, (error, response, body) => {
+	 	console.log('got rsi for:'+ticker);
 		console.log(response);
-		const data = response.data;
-		const b = data.split("jsonCallback(")[1];
+		const b = response.split("jsonCallback(")[1];
 		const b2 = b.substring(0, b.length-2);
 		const parsedResponse = JSON.parse(b2);
 		const lastRsi = b3.values[b3.values.length-1];
@@ -77,12 +75,14 @@ function fetchRsi(ticker) {
 			rsis[tickerPos] = {ticker: ticker, rsi: rsi};
 		}
 	});
+
 }
 
 
 function fetchTickers(ticker) {
-	const request = http.get(KURSER_PART1+CSV_PART, function(response) {
-		console.log('got tickers');
+
+	request.get(KURSER_PART1+CSV_PART, (error, response, body) => {
+	 	console.log('got tickers');
 		const options = {
 		  delimiter : '\t'
 		};
