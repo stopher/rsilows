@@ -94,7 +94,8 @@ function updateTicker(ticker, rsi) {
 	  		console.log("Connected to database!");
 		});
 
-		 var sql = "REPLACE INTO stocks (ticker, rsi) VALUES ('"+con.escape(ticker)+"', "+con.escape(rsi)+")";
+		 var sql = "REPLACE INTO stocks (ticker, rsi) VALUES ("+con.escape(ticker)+", "+con.escape(rsi)+")";
+		 console.log(sql);
   		 con.query(sql, function (err, result) {
 		  if (err) throw err;
 		  console.log(result.affectedRows + " record(s) updated");
