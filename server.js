@@ -21,11 +21,16 @@ const CSV_PART = '?exchange=OSE&sec_types=&sectors=&ticks=&table=tab&sort=alphab
 
 
 const RSI_URL = 'http://quotes.hegnar.no/plotaux.php?paper=';
-const RSI_LAST_PART = '&exchange=OSE&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
+const RSI_EXCHANGE_PART = '&exchange=OSE';
+const RSI_LAST_PART = '&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
 
 
 const OAX_RSI_URL_PART1 = 'http://quotes.hegnar.no/plotaux.php?paper=';
 const OAX_RSI_URL_PART2 = '&exchange=OAX&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH&jsonpart=3';
+
+
+const ST_RSI_URL_PART1 = 'http://quotes.hegnar.no/plotaux.php?paper=';
+const ST_RSI_URL_PART2 = '&exchange=ST&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
 
 
 
@@ -89,9 +94,9 @@ function updateTicker(ticker, rsi) {
 	  		console.log("Connected to database!");
 		});
 
-		 var sql = "REPLACE INTO stocks (ticker, rsi) VALUES ('"+con.escape(ticker)+"', '"+con.escape(rsi)+"')";
+		 var sql = "REPLACE INTO stocks (ticker, rsi) VALUES ('"+con.escape(ticker)+"', "+con.escape(rsi)+")";
   		 con.query(sql, function (err, result) {
-		  if (error) throw error;
+		  if (err) throw err;
 		  console.log(result.affectedRows + " record(s) updated");
 		});
  
@@ -143,7 +148,7 @@ function addTicker(ticker, rsival) {
 function fetchRsi(ticker) {
 
 	const options = {
-	  url: RSI_URL+ticker+RSI_LAST_PART,
+	  url: RSI_URL+ticker+RSI_EXCHANGE_PART+RSI_LAST_PART,
 	  headers: {
 	  	'Host': 'www.hegnar.no',
 		'Referer': 'http://www.hegnar.no/',
