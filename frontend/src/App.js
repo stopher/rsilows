@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
+import './Stars.css';
 import './App.css';
 
 
@@ -22,7 +23,10 @@ class App extends Component {
       .then(response => {
         this.setState({ data: response.data })
         console.log(this.state.data);
-    });
+        })
+      .catch(function(error) {
+          console.log('There has been a problem with your fetch operation: ', error.message);
+        });
   }
 
   render() {
@@ -32,6 +36,10 @@ class App extends Component {
 
     return (
       <div className="App">
+       <div id='stars'></div>
+       <div id='stars2'></div>
+       <div id='stars3'></div>
+
         <header className="App-header">
           <h1 className="App-title">{this.state.data.length} lows</h1>
         </header>
