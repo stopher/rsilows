@@ -147,7 +147,7 @@ function fetchRsi(ticker) {
 	  headers: {
 	  	'Host': 'www.hegnar.no',
 		'Referer': 'http://www.hegnar.no/',
-		'User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'
+		'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'
 	  }
 	};
 
@@ -251,10 +251,10 @@ app.use('/api', router);
 
 fromDBTickers();
 
-setTimeout(
+setTimeout(function() {
 	fetchRsi("FUNCOM");
-	fetchRsi("NAS");
-, 5000);
+	fetchRsi("NAS");	
+}, 5000);
 
 
 
