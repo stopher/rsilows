@@ -43,7 +43,8 @@ class App extends Component {
         <ul>
         {
           this.state.data.map((x) => {
-            return (<li className="rsiObj"><span className='ticker'>{x.ticker}</span><span className='rsival'>{x.rsi}</span></li>);
+            const rsiFixed = x.rsi.toFixed(2);
+            return (<li className="rsiObj"><span className='ticker'>{x.ticker}</span><span className='rsival'>{rsiFixed}</span></li>);
           })
         }
         </ul>
