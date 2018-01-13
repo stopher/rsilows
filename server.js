@@ -217,6 +217,7 @@ function* genFunc() {
 }
 
 function getFreshOseRSIs() {
+	console.log("get fresh ose rsis");
 	let genObj = genFunc();
 	let interval = setInterval(() => {
 	  val = genObj.next();
@@ -235,7 +236,7 @@ const tickersSchedule = schedule.scheduleJob('* * 18 * * *', function(fireDate){
 });
 */
 
-const rsiSchedule = schedule.scheduleJob('* 45 03 * * *', function(fireDate){
+const rsiSchedule = schedule.scheduleJob('* 10 1 * * *', function(fireDate){
   console.log('This rsi schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
   getFreshOseRSIs();
 });
