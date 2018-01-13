@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+
 import './Stars.css';
 import './App.css';
 
@@ -39,10 +39,6 @@ class App extends Component {
        <div id='stars'></div>
        <div id='stars2'></div>
        <div id='stars3'></div>
-
-        <header className="App-header">
-          <h1 className="App-title">{this.state.data.length} lows</h1>
-        </header>
        
         <ul>
         {
@@ -52,7 +48,7 @@ class App extends Component {
         }
         </ul>
 
-        
+        <h1 className="App-title">{this.state.data.length} lows</h1>
       </div>
     );
   }
