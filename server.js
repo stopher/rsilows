@@ -236,7 +236,7 @@ const tickersSchedule = schedule.scheduleJob('* * 18 * * *', function(fireDate){
 });
 */
 
-const rsiSchedule = schedule.scheduleJob({hour: 19, minute: 30, dayOfWeek: 0}, function(fireDate){
+const rsiSchedule = schedule.scheduleJob({hour: 22, minute: 10}, function(fireDate){
   console.log('This rsi schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
   getFreshOseRSIs();
 });
