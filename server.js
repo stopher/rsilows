@@ -61,15 +61,12 @@ function fromDBTickers() {
 
 		con.connect(function(err) {
 	  		if (err) throw err;
-	  		console.log("Connected to database!");
 		});
 
 
 		 con.query("SELECT * FROM stocks", function (err, result, fields) {
 		    if (err) throw err;
-		    console.log("got result from db");
 		    rsis = result;
-		    console.log(rsis);
 		  });
  
 		con.end();
@@ -91,7 +88,6 @@ function updateTicker(ticker, rsi) {
 
 		con.connect(function(err) {
 	  		if (err) throw err;
-	  		console.log("Connected to database!");
 		});
 
 		 var sql = "REPLACE INTO stocks (ticker, rsi) VALUES ("+con.escape(ticker)+", "+con.escape(rsi)+")";
@@ -119,7 +115,6 @@ function createTablesIfNotExists() {
 
 		con.connect(function(err) {
 	  		if (err) throw err;
-	  		console.log("Connected to database!");
 		});
 
 		con.query('CREATE TABLE IF NOT EXISTS stocks (ID int NOT NULL AUTO_INCREMENT, ticker VARCHAR(255) NOT NULL, rsi decimal(60,30), PRIMARY KEY (ID), unique(ticker))', function (error, results, fields) {
@@ -229,12 +224,12 @@ function getFreshOseRSIs() {
 	}, 10000);
 }
  
-/*
-const tickersSchedule = schedule.scheduleJob('* * 18 * * *', function(fireDate){
+
+const tickersSchedule = schedule.scheduleJob('*/30 * * * *', function(fireDate){
   console.log('This ticker schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
-  //fetchTickers();
+  fromDBTickers();
 });
-*/
+
 
 const rsiSchedule = schedule.scheduleJob({hour: 22, minute: 10}, function(fireDate){
   console.log('This rsi schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
