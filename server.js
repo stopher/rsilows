@@ -200,7 +200,7 @@ const tickersSchedule = schedule.scheduleJob('*/30 * * * *', function(fireDate){
 console.log(tickersSchedule.nextInvocation());
 
 
-const rsiSchedule = schedule.scheduleJob('45 20 * * *', function(fireDate){
+const rsiSchedule = schedule.scheduleJob('45 1 * * *', function(fireDate){
   console.log('This rsi schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
   getFreshOseRSIs();
 });
