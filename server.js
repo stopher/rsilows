@@ -172,43 +172,11 @@ function fetchRsi(ticker) {
 
 }
 
-
-/*
-function fetchTickers(ticker) {
-
-	const reqOptions = {
-	  url: KURSER_PART1+CSV_PART,
-	  headers: {
-	  	'Host': 'www.hegnar.no',
-		'Referer': 'http://www.hegnar.no/',
-		'User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'
-	  }
-	};
-
-	request.get(reqOptions, (error, response, body) => {
-	 	console.log('got tickers');
-		const options = {
-		  delimiter : '\t'
-		};
-		const myTickers = [];
-		const dataArr = csvjson.toArray(body, options);
-
-		dataArr.forEach(x => {
-			const ticker = x[1];
-			if(ticker) {
-				if(oseTickers.indexOf(ticker) < 0) {
-					oseTickers.push(ticker);					
-				}
-			}
-		});
-	});
-}
-
-*/
 function* genFunc() {
-  for(let item of oseTickers) {
-    yield item;
-  }
+	console.log('getFunc');
+  	for(let item of oseTickers) {
+    	yield item;
+  	}
 }
 
 function getFreshOseRSIs() {
@@ -229,12 +197,14 @@ const tickersSchedule = schedule.scheduleJob('*/30 * * * *', function(fireDate){
   console.log('This ticker schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
   fromDBTickers();
 });
+console.log(tickersSchedule);
 
 
-const rsiSchedule = schedule.scheduleJob({hour: 21, minute: 55}, function(fireDate){
+const rsiSchedule = schedule.scheduleJob('45 20 * * *', function(fireDate){
   console.log('This rsi schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
   getFreshOseRSIs();
 });
+console.log(rsiSchedule);
 
 function compare(a,b) {
   if (a.rsi < b.rsi)
