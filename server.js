@@ -21,16 +21,9 @@ const CSV_PART = '?exchange=OSE&sec_types=&sectors=&ticks=&table=tab&sort=alphab
 
 
 const RSI_URL = 'http://quotes.hegnar.no/plotaux.php?paper=';
-const RSI_EXCHANGE_PART = '&exchange=OSE';
-const RSI_LAST_PART = '&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
-
-
-const OAX_RSI_URL_PART1 = 'http://quotes.hegnar.no/plotaux.php?paper=';
-const OAX_RSI_URL_PART2 = '&exchange=OAX&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH&jsonpart=3';
-
-
-const ST_RSI_URL_PART1 = 'http://quotes.hegnar.no/plotaux.php?paper=';
-const ST_RSI_URL_PART2 = '&exchange=ST&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
+const OSE_LAST_PART = '&exchange=OSE&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
+const OAX_LAST_PART = '&exchange=OAX&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH&jsonpart=3';
+const ST_LAST_PART = '&exchange=ST&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
 
 
 
@@ -91,7 +84,6 @@ function updateTicker(ticker, rsi) {
 		});
 
 		 var sql = "REPLACE INTO stocks (ticker, rsi) VALUES ("+con.escape(ticker)+", "+con.escape(rsi)+")";
-		 console.log(sql);
   		 con.query(sql, function (err, result) {
 		  if (err) throw err;
 		  console.log(result.affectedRows + " record(s) updated");
@@ -119,7 +111,6 @@ function createTablesIfNotExists() {
 
 		con.query('CREATE TABLE IF NOT EXISTS stocks (ID int NOT NULL AUTO_INCREMENT, ticker VARCHAR(255) NOT NULL, rsi decimal(60,30), PRIMARY KEY (ID), unique(ticker))', function (error, results, fields) {
 		  if (error) throw error;
-		  console.log("Table stocks created");
 		});
  
 		con.end();
@@ -129,10 +120,9 @@ function createTablesIfNotExists() {
 }
 
 
-//testDb();
 createTablesIfNotExists();
 
-//getNewFile();
+
 
 const oaxTickers = ["APCL", "HUGO", "SAGA", "PCIB", "NORTH", "UMS", "ALNG", "HBC", "NOM", "AEGA", "HUNT", "MSEIS", "AWDR"];
 const oseTickers = ["FUNCOM", "NAS", "REC", "TEL", "MHG", "KOMP", "FRO", "DNB", "MHG", "STL", "SUBC", "GOGL", "AKERBP", "YAR", "SBANK", "ELE", "PGS", "TGS", "NONG", "GJF", "BWLPG", "AKER", "ORK", "LSG", "STB", "BWO", "AVANCE", "NOD", "AKSO", "AXA", "QEC", "BAKKA", "IOX", "SALM", "WWL", "AUSS", "SCHA", "ENTRA", "NOFI", "KOG", "TOM", "THIN", "BRG", "NRS", "SNI", "SRBANK", "ARCHER", "KIT", "ODL", "MING", "OCY", "EPR", "NANO", "NEL", "XXL", "VEI", "SPU", "GSF", "KVAER", "SSO", "SOFF", "BDRILL", "GIG", "PLCS", "BGBIO", "FJORD", "KOA", "HLNG", "TRVX", "WWI", "EVRY", "DOF", "AMSC", "ATEA", "PROTCT", "ASC", "SONG", "OPERA", "BOUVET", "SDRL", "SBO", "SSG", "PHO", "IMSK", "JIN", "HAVI", "KID", "AKA", "ZAL", "SDSD", "WSTEP", "EMGS", "BIOTEC", "TTS", "SIOFF", "OTS", "APP", "CXENSE", "DAT"];
@@ -141,10 +131,10 @@ function addTicker(ticker, rsival) {
 	rsis.push({ticker: ticker, rsi: rsival});
 }
 
-function fetchRsi(ticker) {
+function fetchRsi(ticker, lastPart) {
 
 	const options = {
-	  url: RSI_URL+ticker+RSI_EXCHANGE_PART+RSI_LAST_PART,
+	  url: RSI_URL+ticker+lastPart,
 	  headers: {
 	  	'Host': 'www.hegnar.no',
 		'Referer': 'http://www.hegnar.no/',
@@ -153,7 +143,6 @@ function fetchRsi(ticker) {
 	};
 
 	request.get(options, (error, response, body) => {
-	 	console.log('got rsi for:'+ticker);
 		const b = body.split("jsonCallback(")[1];
 		const b2 = b.substring(0, b.length-2);
 		const parsedResponse = JSON.parse(b2);
@@ -172,24 +161,42 @@ function fetchRsi(ticker) {
 
 }
 
-function* genFunc() {
-	console.log('getFunc');
+function* oaxFunc() {
+  	for(let item of oaxTickers) {
+    	yield item;
+  	}
+}
+
+function* oseFunc() {
   	for(let item of oseTickers) {
     	yield item;
   	}
 }
 
-function getFreshOseRSIs() {
-	console.log("get fresh ose rsis");
-	let genObj = genFunc();
+function getFreshOaxRSIs() {
+	console.log("get fresh oax rsis");
+	let genObj = oaxFunc();
 	let interval = setInterval(() => {
 		let val = genObj.next();
 		if (val.done) {
 		    clearInterval(interval);
 		} else {
-		    fetchRsi(val.value);
+		    fetchRsi(val.value, OAX_LAST_PART);
 		}
-	}, 10000);
+	}, 16000);
+}
+
+function getFreshOseRSIs() {
+	console.log("get fresh ose rsis");
+	let genObj = oseFunc();
+	let interval = setInterval(() => {
+		let val = genObj.next();
+		if (val.done) {
+		    clearInterval(interval);
+		} else {
+		    fetchRsi(val.value, OSE_LAST_PART);
+		}
+	}, 13000);
 }
  
 
@@ -200,10 +207,16 @@ const tickersSchedule = schedule.scheduleJob('*/30 * * * *', function(fireDate){
 console.log(tickersSchedule.nextInvocation());
 
 
-const rsiSchedule = schedule.scheduleJob('30 20 * * *', function(fireDate){
-  console.log('This rsi schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
+const rsiSchedule = schedule.scheduleJob('10 17 * * *', function(fireDate){
+  console.log('This ose rsi schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
   getFreshOseRSIs();
 });
+
+const rsiSchedule = schedule.scheduleJob('20 17 * * *', function(fireDate){
+  console.log('This oax rsi schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
+  getFreshOaxRSIs();
+});
+
 console.log(rsiSchedule.nextInvocation());
 
 function compare(a,b) {
@@ -222,10 +235,6 @@ app.use('/api', router);
 
 
 fromDBTickers();
-
-
-setTimeout(getFreshOseRSIs, 5000);
-
 
 
 app.use(express.static(path.resolve(__dirname, 'frontend', 'build')));
