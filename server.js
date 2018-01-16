@@ -183,12 +183,12 @@ function getFreshOseRSIs() {
 	console.log("get fresh ose rsis");
 	let genObj = genFunc();
 	let interval = setInterval(() => {
-	  val = genObj.next();
-	  if (val.done) {
-	    clearInterval(interval);
-	  } else {
-	    fetchRsi(val.value);
-	  }
+		let val = genObj.next();
+		if (val.done) {
+		    clearInterval(interval);
+		} else {
+		    fetchRsi(val.value);
+		}
 	}, 10000);
 }
  
@@ -223,7 +223,8 @@ app.use('/api', router);
 
 fromDBTickers();
 
-getFreshOseRSIs();
+
+setTimeout(getFreshOseRSIs, 5000);
 
 
 
