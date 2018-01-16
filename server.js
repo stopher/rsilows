@@ -204,20 +204,20 @@ const tickersSchedule = schedule.scheduleJob('*/30 * * * *', function(fireDate){
   console.log('This ticker schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
   fromDBTickers();
 });
-console.log(tickersSchedule.nextInvocation());
 
-
-const rsiSchedule = schedule.scheduleJob('10 17 * * *', function(fireDate){
+const oseSchedule = schedule.scheduleJob('10 17 * * *', function(fireDate){
   console.log('This ose rsi schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
   getFreshOseRSIs();
 });
 
-const rsiSchedule = schedule.scheduleJob('20 17 * * *', function(fireDate){
+const oaxSchedule = schedule.scheduleJob('20 17 * * *', function(fireDate){
   console.log('This oax rsi schedule was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
   getFreshOaxRSIs();
 });
 
-console.log(rsiSchedule.nextInvocation());
+console.log(tickersSchedule.nextInvocation());
+console.log(oseSchedule.nextInvocation());
+console.log(oaxSchedule.nextInvocation());
 
 function compare(a,b) {
   if (a.rsi < b.rsi)
