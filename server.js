@@ -22,7 +22,7 @@ const CSV_PART = '?exchange=OSE&sec_types=&sectors=&ticks=&table=tab&sort=alphab
 
 const RSI_URL = 'http://quotes.hegnar.no/plotaux.php?paper=';
 const OSE_LAST_PART = '&exchange=OSE&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
-const OAX_LAST_PART = '&exchange=OAX&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH&jsonpart=3';
+const OAX_LAST_PART = '&exchange=OAX&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
 const ST_LAST_PART = '&exchange=ST&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
 
 
@@ -123,7 +123,7 @@ function createTablesIfNotExists() {
 createTablesIfNotExists();
 
 
-
+const stTicker = ['STAR-B', 'PDX', 'THQN-B', 'SF'];
 const oaxTickers = ["APCL", "HUGO", "SAGA", "PCIB", "NORTH", "UMS", "ALNG", "HBC", "NOM", "AEGA", "HUNT", "MSEIS", "AWDR"];
 const oseTickers = ["FUNCOM", "NAS", "REC", "TEL", "MHG", "KOMP", "FRO", "DNB", "MHG", "STL", "SUBC", "GOGL", "AKERBP", "YAR", "SBANK", "ELE", "PGS", "TGS", "NONG", "GJF", "BWLPG", "AKER", "ORK", "LSG", "STB", "BWO", "AVANCE", "NOD", "AKSO", "AXA", "QEC", "BAKKA", "IOX", "SALM", "WWL", "AUSS", "SCHA", "ENTRA", "NOFI", "KOG", "TOM", "THIN", "BRG", "NRS", "SNI", "SRBANK", "ARCHER", "KIT", "ODL", "MING", "OCY", "EPR", "NANO", "NEL", "XXL", "VEI", "SPU", "GSF", "KVAER", "SSO", "SOFF", "BDRILL", "GIG", "PLCS", "BGBIO", "FJORD", "KOA", "HLNG", "TRVX", "WWI", "EVRY", "DOF", "AMSC", "ATEA", "PROTCT", "ASC", "SONG", "OPERA", "BOUVET", "SDRL", "SBO", "SSG", "PHO", "IMSK", "JIN", "HAVI", "KID", "AKA", "ZAL", "SDSD", "WSTEP", "EMGS", "BIOTEC", "TTS", "SIOFF", "OTS", "APP", "CXENSE", "DAT"];
 let rsis = [];
