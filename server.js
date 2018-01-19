@@ -16,11 +16,26 @@ const schedule = require('node-schedule');
 const mysql = require('mysql');
 
 
-const RSI_URL = 'http://quotes.hegnar.no/plotaux.php?paper=';
-const OSE_LAST_PART = '&exchange=OSE&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
-const OAX_LAST_PART = '&exchange=OAX&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
-const ST_LAST_PART = '&exchange=ST&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
 
+
+const ENV_HEADER_HOST = process.env.HEADER_HOST;
+const ENV_HEADER_REFERER = process.env.HEADER_REFERER;
+const ENV_OAX_LAST_PART = process.env.OAX_LAST_PART;
+const ENV_OSE_LAST_PART = process.env.OSE_LAST_PART;
+const ENV_ST_LAST_PART = process.env.ST_LAST_PART;
+const ENV_TICKER_FIRST_PART = process.env.TICKER_FIRST_PART;
+
+console.log(ENV_HEADER_HOST);
+console.log(ENV_HEADER_REFERER);
+console.log(ENV_OAX_LAST_PART);
+console.log(ENV_OSE_LAST_PART);
+console.log(ENV_ST_LAST_PART);
+console.log(ENV_TICKER_FIRST_PART);
+
+const RSI_URL = ENV_TICKER_FIRST_PART;
+const OSE_LAST_PART = ENV_OSE_LAST_PART;
+const OAX_LAST_PART = ENV_OAX_LAST_PART;
+const ST_LAST_PART = ENV_ST_LAST_PART;
 
 
 // configure app to use bodyParser()
@@ -132,8 +147,8 @@ function fetchRsi(ticker, lastPart) {
 	const options = {
 	  url: RSI_URL+ticker+lastPart,
 	  headers: {
-	  	'Host': 'www.hegnar.no',
-		'Referer': 'http://www.hegnar.no/',
+	  	'Host': ENV_HEADER_HOST,
+		'Referer': HEADER_REFERER,
 		'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'
 	  }
 	};
@@ -232,6 +247,10 @@ app.use('/api', router);
 
 
 fromDBTickers();
+
+setTimeout(function() {
+	fetchRsi('FUNCOM', OSE_LAST_PART);
+},10000);
 
 
 app.use(express.static(path.resolve(__dirname, 'frontend', 'build')));
