@@ -16,10 +16,6 @@ const schedule = require('node-schedule');
 const mysql = require('mysql');
 
 
-const KURSER_PART1 = 'http://www.netfonds.no/quotes/kurs.php';
-const CSV_PART = '?exchange=OSE&sec_types=&sectors=&ticks=&table=tab&sort=alphabetic';
-
-
 const RSI_URL = 'http://quotes.hegnar.no/plotaux.php?paper=';
 const OSE_LAST_PART = '&exchange=OSE&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
 const OAX_LAST_PART = '&exchange=OAX&from=&to=&period=&scale=linear&linewidth=1&candle=1&theme=white&intraday=history&datap=true&height=250&width=500&p_PERIOD=14&id=RELATIVE-STRENGTH-INDEX&jsonpart=3';
@@ -229,7 +225,8 @@ function compare(a,b) {
 
 router.get('/', function(req, res) {
 	const responseData = rsis.sort(compare);
-    res.json({ data: responseData});   
+	const filteredData = responseData.filter(x => x.rsi < 50.0);
+    res.json({ data: filteredData});   
 });
 app.use('/api', router);
 

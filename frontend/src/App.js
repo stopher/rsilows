@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import './Stars.css';
 import './App.css';
 
 
