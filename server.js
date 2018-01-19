@@ -1,10 +1,5 @@
 'use strict';
-// server.js
 
-// BASE SETUP
-// =============================================================================
-
-// call the packages we need
 const express    = require('express');        // call express
 const app        = express();                 // define our app using express
 const bodyParser = require('body-parser');
@@ -14,9 +9,6 @@ const csvjson = require('csvjson');
 
 const schedule = require('node-schedule');
 const mysql = require('mysql');
-
-
-
 
 const ENV_HEADER_HOST = process.env.HEADER_HOST;
 const ENV_HEADER_REFERER = process.env.HEADER_REFERER;
@@ -38,7 +30,6 @@ const OAX_LAST_PART = ENV_OAX_LAST_PART;
 const ST_LAST_PART = ENV_ST_LAST_PART;
 
 
-// configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -148,7 +139,7 @@ function fetchRsi(ticker, lastPart) {
 	  url: RSI_URL+ticker+lastPart,
 	  headers: {
 	  	'Host': ENV_HEADER_HOST,
-		'Referer': HEADER_REFERER,
+		'Referer': ENV_HEADER_REFERER,
 		'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'
 	  }
 	};
